@@ -23,7 +23,19 @@ test_cases = [
         "User-agent: hello\nUser-agent: *",
         "User-agent: hello\nUser-agent: *\n",
         "User-agent: *\nUser-agent: hello",
-        "User-agent: *\nUser-agent: hello\n"]
+        "User-agent: *\nUser-agent: hello\n",
+        "#This is a comment\nUser-agent: *",
+        "#This is a comment\nUser-agent: hello",
+        "#This is a comment\nUser-agent: hello\n",
+        "#This is a comment\nUser-agent: hello\nUser-agent: *",
+        "#This is a comment\nUser-agent: hello\nUser-agent: *\n",
+        "#This is a comment\nUser-agent: *\n",
+        "#This is a comment\nUser-agent: *\nUser-agent: hello",
+        "#This is a comment\nUser-agent: *\nUser-agent: hello\n",
+        "#This is a comment\nUser-agent: * #Inline",
+        "#This is a comment\nUser-agent: *#Inline-closer",
+        "#This is a comment\n#Second comment\nUser-agent: *\n"]
+
 
 for tc in test_cases:
     print "===== beginning ", tc
