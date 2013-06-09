@@ -50,15 +50,24 @@ test_cases = [
 with open('robots.txt', 'r') as f:
     test_cases.append(f.read())
 
-for tc in test_cases:
-    print "===== beginning ", tc
+def scan():
+    tokens = []
+    for tc in test_cases:
+        print "===== beginning ", tc
 
-    lines = tc.split("\n")
-    for line in lines:
-        if line:
-            print "working on ", line
-            token, rem = scanner.scan(line)
-            print token
-    print "===== ending "
+        lines = tc.split("\n")
+        for line in lines:
+            if line:
+                print "working on ", line
+                token, rem = scanner.scan(line)
+                if token[0][0] != "\\COMMENT/":
+                    # token is a list of lists.
+                    # we only need the first element in the list collection
+                    tokens.append(tuple(token)[0])
+                print token
+        print "===== ending "
 
+    return tuple(tokens)
 
+tokens = scan()
+print tokens
