@@ -12,10 +12,20 @@ def comment(scanner, token):
 def newline(scanner, token):
     return "\NEWLINE/", token
 
+def disallow(scanner, token):
+    return "\DISALLOW/", token
+
+def disallow_value(scanner, token):
+    return "\DISALLOW_VALUE", token
+
 scanner = re.Scanner([
-    ("User-agent: |User-agent:", user_agent),
-    ("\*|[a-zA-Z_]+", user_agent_value),
-    ("#\w+", comment)])
+    #("User-agent: |User-agent:", user_agent),
+    ("User-agent: \*|User-agent:\*|User-agent: [a-zA-Z_0-9]+|User-agent:[a-zA-Z_0-9]+", user_agent_value),
+    #("\*|[a-zA-Z_]+", user_agent_value),
+    ("#\w+", comment),
+    #("Disallow: | Disallow:", disallow),
+    ("Disallow: [a-zA-Z_/\-0-9\s\.~]*|Disallow:[a-zA-Z_/\-0-9\s\.~]*", disallow_value)])
+
 #    ("\\n+", newline)])
 test_cases = [
         "User-agent: hello",
@@ -34,8 +44,11 @@ test_cases = [
         "#This is a comment\nUser-agent: *\nUser-agent: hello\n",
         "#This is a comment\nUser-agent: * #Inline",
         "#This is a comment\nUser-agent: *#Inline-closer",
-        "#This is a comment\n#Second comment\nUser-agent: *\n"]
+        "#This is a comment\n#Second comment\nUser-agent: *\n",
+        "User-agent: hello\nDisallow: /"]
 
+with open('robots.txt', 'r') as f:
+    test_cases.append(f.read())
 
 for tc in test_cases:
     print "===== beginning ", tc
