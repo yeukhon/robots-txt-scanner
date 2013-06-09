@@ -50,24 +50,29 @@ test_cases = [
 with open('robots.txt', 'r') as f:
     test_cases.append(f.read())
 
-def scan():
+def scan(body):
+    """ Return token tuples after scanning through each line
+    in robots.txt."""
+    tokens = []
+    lines = body.split("\n")
+    for line in lines:
+        # the last item is usually empty if it has a newline character
+        if line:
+            print "working on ", line
+            token, rem = scanner.scan(line)
+            if token[0][0] != "\\COMMENT/":
+                # tokeb is a list of lists
+                # but we only need the first element in this list collection
+                tokens.append(tuple(token)[0])
+            print token
+    return tuple(tokens)
+    
+def test_scan():
     tokens = []
     for tc in test_cases:
         print "===== beginning ", tc
-
-        lines = tc.split("\n")
-        for line in lines:
-            if line:
-                print "working on ", line
-                token, rem = scanner.scan(line)
-                if token[0][0] != "\\COMMENT/":
-                    # token is a list of lists.
-                    # we only need the first element in the list collection
-                    tokens.append(tuple(token)[0])
-                print token
+        tokens.append(scan(tc))
         print "===== ending "
-
-    return tuple(tokens)
-
-tokens = scan()
+    return tokens
+tokens = test_scan()
 print tokens
