@@ -1,6 +1,7 @@
 import unittest
 from scanner import scan
 
+
 class TestRobotScanner(unittest.TestCase):
     def test_disallow_first_raise_exception(self):
         with open('robots/disallow-first.txt', 'r') as f:

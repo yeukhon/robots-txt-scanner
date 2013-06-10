@@ -1,19 +1,10 @@
 import re
 
-def user_agent(scanner, token):
-    return "\USER_AGENT/", token
-
 def user_agent_value(scanner, token):
     return "\USER_AGENT_VALUE/", token
 
 def comment(scanner, token):
     return "\COMMENT/", token
-
-def newline(scanner, token):
-    return "\NEWLINE/", token
-
-def disallow(scanner, token):
-    return "\DISALLOW/", token
 
 def disallow_value(scanner, token):
     return "\DISALLOW_VALUE/", token
@@ -21,37 +12,17 @@ def disallow_value(scanner, token):
 def sitemap(scaner, token):
     return "\SITEMAP_VALUE/", token
 
-scanner = re.Scanner([
-    #("User-agent: |User-agent:", user_agent),
-    ("User-agent: \*|User-agent:\*|User-agent: [a-zA-Z_0-9]+|User-agent:[a-zA-Z_0-9]+", user_agent_value),
-    #("\*|[a-zA-Z_]+", user_agent_value),
-    ("^#.*", comment),
-    #("Disallow: | Disallow:", disallow),
-    ("Disallow: [a-zA-Z_/\-0-9\s\.~]*|Disallow:[a-zA-Z_/\-0-9\s\.~]*", disallow_value),
-    ("Sitemap: http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+|Sitemap:http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+", sitemap)])
-#    ("\\n+", newline)])
-test_cases = [
-        "User-agent: hello",
-        "User-agent: *",
-        "User-agent: hello\nUser-agent: *",
-        "User-agent: hello\nUser-agent: *\n",
-        "User-agent: *\nUser-agent: hello",
-        "User-agent: *\nUser-agent: hello\n",
-        "#This is a comment\nUser-agent: *",
-        "#This is a comment\nUser-agent: hello",
-        "#This is a comment\nUser-agent: hello\n",
-        "#This is a comment\nUser-agent: hello\nUser-agent: *",
-        "#This is a comment\nUser-agent: hello\nUser-agent: *\n",
-        "#This is a comment\nUser-agent: *\n",
-        "#This is a comment\nUser-agent: *\nUser-agent: hello",
-        "#This is a comment\nUser-agent: *\nUser-agent: hello\n",
-        "#This is a comment\nUser-agent: * #Inline",
-        "#This is a comment\nUser-agent: *#Inline-closer",
-        "#This is a comment\n#Second comment\nUser-agent: *\n",
-        "User-agent: hello\nDisallow: /"]
+UA_REGEX = "User-agent: \*|User-agent:\*|User-agent: [a-zA-Z_0-9]+|User-agent:[a-zA-Z_0-9]+"
+CM_REGEX = "^#.*"
+DIS_REGEX = "Disallow: [a-zA-Z_/\-0-9\s\.~]*|Disallow:[a-zA-Z_/\-0-9\s\.~]*"
+URL_REGEX = "http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+"
+SM_REGEX = "Sitemap: %s|Sitemap:%s" %(URL_REGEX, URL_REGEX)
 
-#with open('robots/robots.txt', 'r') as f:
-#    test_cases.append(f.read())
+scanner = re.Scanner([
+    (UA_REGEX, user_agent_value),
+    (CM_REGEX, comment),
+    (DIS_REGEX, disallow_value),
+    (SM_REGEX, sitemap)])
 
 def scan(body):
     """ Return token tuples after scanning through each line
@@ -88,15 +59,4 @@ def scan(body):
                 tokens.append(tuple(token)[0])
             print token
     return tuple(tokens)
-
-#def test_scan():
-#    tokens = []
-#    for tc in test_cases:
-#        print "===== beginning ", tc
-#        tokens.append(scan(tc))
-#        print "===== ending "
-#    return tokens
-#tokens = test_scan()
-#print tokens
-
 
