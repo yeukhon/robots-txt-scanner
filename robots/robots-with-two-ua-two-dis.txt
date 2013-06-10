@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /john
+
+User-agent: cheeseBurgerCat
+Disallow: /ceiling-cat-place/

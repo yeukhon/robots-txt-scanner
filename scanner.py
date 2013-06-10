@@ -25,7 +25,7 @@ scanner = re.Scanner([
     #("User-agent: |User-agent:", user_agent),
     ("User-agent: \*|User-agent:\*|User-agent: [a-zA-Z_0-9]+|User-agent:[a-zA-Z_0-9]+", user_agent_value),
     #("\*|[a-zA-Z_]+", user_agent_value),
-    ("#\w+", comment),
+    ("^#.*", comment),
     #("Disallow: | Disallow:", disallow),
     ("Disallow: [a-zA-Z_/\-0-9\s\.~]*|Disallow:[a-zA-Z_/\-0-9\s\.~]*", disallow_value),
     ("Sitemap: http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+|Sitemap:http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+", sitemap)])

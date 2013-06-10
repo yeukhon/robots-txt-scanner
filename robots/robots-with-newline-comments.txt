@@ -1,0 +1,8 @@
+# ceiling cat: Hi Grummy?
+User-agent: *
+# grummy cat: .\_/.
+Disallow: /john
+# ceiling cat: Hi Grummy!
+User-agent: cheeseBurgerCat
+Disallow: /ceiling-cat-place/
+# grummy cat: get out
