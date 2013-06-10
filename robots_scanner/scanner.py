@@ -46,7 +46,6 @@ def scan(body):
     for line in lines:
         # the last item is usually empty if it has a newline character
         if line:
-            print "working on ", line
             token, rem = scanner.scan(line)
             token_name = token[0][0]
             if token_name != "\\COMMENT/":
@@ -57,6 +56,5 @@ def scan(body):
                 # tokeb is a list of lists
                 # but we only need the first element in this list collection
                 tokens.append(tuple(token)[0])
-            print token
     return tuple(tokens)
 
