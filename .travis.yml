@@ -6,7 +6,4 @@ python:
   - "3.2"
   - "3.3"
 
-install:
-  - "pip install nose --use-mirrors"
-
-scripts: nosetests
+script: nosetests
