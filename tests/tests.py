@@ -1,5 +1,5 @@
 import unittest
-from scanner import scan
+from robots_scanner.scanner import scan
 
 
 class TestRobotScanner(unittest.TestCase):
