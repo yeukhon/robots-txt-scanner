@@ -1,6 +1,6 @@
 import os
 import unittest
-from robots_scanner.scanner import scan
+from robots_scanner.scanner import scan, _name
 
 TEST_DIR = os.path.dirname(os.path.abspath(__file__))
 ROBOTS_DIR = os.path.join(TEST_DIR, 'robots')
@@ -13,6 +13,11 @@ class TestRobotScanner(unittest.TestCase):
 
     def test_disallow_first_raise_exception(self):
         with open(os.path.join(ROBOTS_DIR, 'disallow-first.txt'), 'r') as f:
+            body = f.read()
+        self.assertRaises(Exception, scan, body)
+
+    def test_allow_first_raise_exception(self):
+        with open(os.path.join(ROBOTS_DIR, 'allow-first.txt'), 'r') as f:
             body = f.read()
         self.assertRaises(Exception, scan, body)
 
@@ -42,3 +47,18 @@ class TestRobotScanner(unittest.TestCase):
                (('\\USER_AGENT_VALUE/', 'User-agent: *'), ('\\DISALLOW_VALUE/', 'Disallow: /john'),
                  ('\\USER_AGENT_VALUE/', 'User-agent: cheeseBurgerCat'), ('\\DISALLOW_VALUE/', 'Disallow: /ceiling-cat-place/')),
                 tokens)
+    def test_robots_with_allow_value(self):
+        """ This robots.txt comes from marketplace.mozilla.com. """
+        tokens = self.do_scan("robots-with-allow-value.txt")
+        self.assertEqual(
+                (('\\USER_AGENT_VALUE/', 'User-agent: *'), ('\\ALLOW_VALUE/', 'Allow: /'), \
+                    ('\\DISALLOW_VALUE/', 'Disallow: /downloads/'), ('\\DISALLOW_VALUE/', 'Disallow: /telefonica/')),
+                tokens)
+    def test_disabllow_name(self):
+        name = '\\DISALLOW_VALUE/'
+        resp = _name(name)
+        self.assertEqual(resp, 'Disallow')
+    def test_allow_name(self):
+        name = '\\ALLOW_NAME/'
+        resp = _name(name)
+        self.assertEqual(resp, 'Allow')
