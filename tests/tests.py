@@ -70,6 +70,11 @@ class TestRobotScanner(unittest.TestCase):
         self.assertEqual(
             (('\\USER_AGENT_VALUE/', 'User-agent: Google'), ('\\CRAWL_DELAY_VALUE/', 'Crawl-delay: 1/4')), tokens)
 
+    def test_robots_with_request_rate(self):
+        tokens = self.do_scan('robots-with-request-rate.txt')
+        self.assertEqual(
+            (('\\USER_AGENT_VALUE/', 'User-agent: Google'), ('\\REQUEST_RATE_VALUE/', 'Request-rate: 1/4')), tokens)
+
     def test_disabllow_name(self):
         name = '\\DISALLOW_VALUE/'
         resp = _name(name)
