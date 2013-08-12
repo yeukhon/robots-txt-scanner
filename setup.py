@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(name="robots-scanner",
-      version="0.1.2",
+      version="0.1.3",
       description="robots.txt scanner",
       author="Yeuk Hon Wong",
       classifiers=[
