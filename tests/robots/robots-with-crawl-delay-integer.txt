@@ -1,0 +1,2 @@
+User-agent: Google
+Crawl-delay: 2 # specifies a 2 second timeout

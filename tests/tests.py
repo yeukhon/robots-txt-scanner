@@ -54,10 +54,27 @@ class TestRobotScanner(unittest.TestCase):
                 (('\\USER_AGENT_VALUE/', 'User-agent: *'), ('\\ALLOW_VALUE/', 'Allow: /'), \
                     ('\\DISALLOW_VALUE/', 'Disallow: /downloads/'), ('\\DISALLOW_VALUE/', 'Disallow: /telefonica/')),
                 tokens)
+
+    def test_robots_with_crawl_delay_integer(self):
+        tokens = self.do_scan('robots-with-crawl-delay-integer.txt')
+        self.assertEqual(
+            (('\\USER_AGENT_VALUE/', 'User-agent: Google'), ('\\CRAWL_DELAY_VALUE/', 'Crawl-delay: 2')), tokens)
+
+    def test_robots_with_crawl_delay_decimal(self):
+        tokens = self.do_scan('robots-with-crawl-delay-decimal.txt')
+        self.assertEqual(
+            (('\\USER_AGENT_VALUE/', 'User-agent: Google'), ('\\CRAWL_DELAY_VALUE/', 'Crawl-delay: 0.5')), tokens)
+
+    def test_robots_with_crawl_delay_fraction(self):
+        tokens = self.do_scan('robots-with-crawl-delay-fraction.txt')
+        self.assertEqual(
+            (('\\USER_AGENT_VALUE/', 'User-agent: Google'), ('\\CRAWL_DELAY_VALUE/', 'Crawl-delay: 1/4')), tokens)
+
     def test_disabllow_name(self):
         name = '\\DISALLOW_VALUE/'
         resp = _name(name)
         self.assertEqual(resp, 'Disallow')
+
     def test_allow_name(self):
         name = '\\ALLOW_NAME/'
         resp = _name(name)

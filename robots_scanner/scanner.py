@@ -15,19 +15,24 @@ def sitemap(scaner, token):
 def allow_value(scanner, token):
     return "\ALLOW_VALUE/", token
 
+def crawl_delay_value(scanner, token):
+    return "\CRAWL_DELAY_VALUE/", token
+
 UA_REGEX = "User-agent: \*|User-agent:\*|User-agent: [a-zA-Z_0-9]+|User-agent:[a-zA-Z_0-9]+"
 CM_REGEX = "^#.*"
 DIS_REGEX = "Disallow: [a-zA-Z_/\-0-9\s\.~]*|Disallow:[a-zA-Z_/\-0-9\s\.~]*"
 ALLOW_REGEX = "Allow: [a-zA-Z_/\-0-9\s\.~]*|Allow:[a-zA-Z_/\-0-9\s\.~]*"
 URL_REGEX = "http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+"
 SM_REGEX = "Sitemap: %s|Sitemap:%s" %(URL_REGEX, URL_REGEX)
+CRAWL_REGEX = "Crawl-delay:(\s)?\d+([\/.]\d+)?"
 
 scanner = re.Scanner([
     (UA_REGEX, user_agent_value),
     (CM_REGEX, comment),
     (DIS_REGEX, disallow_value),
     (ALLOW_REGEX, allow_value),
-    (SM_REGEX, sitemap)])
+    (SM_REGEX, sitemap),
+    (CRAWL_REGEX, crawl_delay_value)])
 
 def scan(body):
     """ Return token tuples after scanning through each line
