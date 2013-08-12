@@ -75,6 +75,11 @@ class TestRobotScanner(unittest.TestCase):
         self.assertEqual(
             (('\\USER_AGENT_VALUE/', 'User-agent: Google'), ('\\REQUEST_RATE_VALUE/', 'Request-rate: 1/4')), tokens)
 
+    def test_robots_with_visit_time(self):
+        tokens = self.do_scan('robots-with-visit-time.txt')
+        self.assertEqual(
+            (('\\USER_AGENT_VALUE/', 'User-agent: Google'), ('\\VISIT_TIME_VALUE/', 'Visit-time: 1200-4000')), tokens)
+
     def test_disabllow_name(self):
         name = '\\DISALLOW_VALUE/'
         resp = _name(name)
