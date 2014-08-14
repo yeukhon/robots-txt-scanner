@@ -21,6 +21,14 @@ class TestRobotScanner(unittest.TestCase):
             body = f.read()
         self.assertRaises(Exception, scan, body)
 
+    def test_disallow_star(self):
+        tokens = self.do_scan("robots-with-disallow-star.txt")
+        self.assertEqual(
+            tokens,
+            (('\\USER_AGENT_VALUE/',
+              'User-agent: google'),
+             ('\\DISALLOW_VALUE/', 'Disallow: *')))
+
     def test_sitemap(self):
         tokens = self.do_scan('robots-with-sitemap.txt')
         self.assertEqual(
