@@ -25,68 +25,86 @@ class TestRobotScanner(unittest.TestCase):
         tokens = self.do_scan("robots-with-disallow-star.txt")
         self.assertEqual(
             tokens,
-            (('\\USER_AGENT_VALUE/',
+            [('\\USER_AGENT_VALUE/',
               'User-agent: google'),
-             ('\\DISALLOW_VALUE/', 'Disallow: *')))
+             ('\\DISALLOW_VALUE/', 'Disallow: *')])
 
     def test_sitemap(self):
         tokens = self.do_scan('robots-with-sitemap.txt')
         self.assertEqual(
-                (('\\USER_AGENT_VALUE/', 'User-agent: *'), ('\\DISALLOW_VALUE/', 'Disallow: /john'),
-                 ('\\SITEMAP_VALUE/', 'Sitemap: https://example.org/sitemaps/sitemap.xml.gz')),
+                [('\\USER_AGENT_VALUE/', 'User-agent: *'), ('\\DISALLOW_VALUE/', 'Disallow: /john'),
+                 ('\\SITEMAP_VALUE/', 'Sitemap: https://example.org/sitemaps/sitemap.xml.gz')],
                 tokens)
+
     def test_basic_robots(self):
         tokens = self.do_scan('robots-basic.txt')
         self.assertEqual(
-                (('\\USER_AGENT_VALUE/', 'User-agent: *'), ('\\DISALLOW_VALUE/', 'Disallow: /john'),
-                 ('\\DISALLOW_VALUE/', 'Disallow: /json/')),
+                [('\\USER_AGENT_VALUE/', 'User-agent: *'), ('\\DISALLOW_VALUE/', 'Disallow: /john'),
+                 ('\\DISALLOW_VALUE/', 'Disallow: /json/')],
                 tokens)
+
     def test_user_agents_two_disallows(self):
         tokens = self.do_scan('robots-with-two-ua-two-dis.txt')
         self.assertEqual(
-                (('\\USER_AGENT_VALUE/', 'User-agent: *'), ('\\DISALLOW_VALUE/', 'Disallow: /john'),
-                 ('\\USER_AGENT_VALUE/', 'User-agent: cheeseBurgerCat'), ('\\DISALLOW_VALUE/', 'Disallow: /ceiling-cat-place/')),
+                [('\\USER_AGENT_VALUE/', 'User-agent: *'), ('\\DISALLOW_VALUE/', 'Disallow: /john'),
+                 ('\\USER_AGENT_VALUE/', 'User-agent: cheeseBurgerCat'),
+                 ('\\DISALLOW_VALUE/', 'Disallow: /ceiling-cat-place/')],
                 tokens)
 
     def test_robots_with_newline_comments(self):
         """ We reuse robots-with-two-ua-two-dis.txt but with more comments. """
         tokens = self.do_scan('robots-with-newline-comments.txt')
         self.assertEqual(
-               (('\\USER_AGENT_VALUE/', 'User-agent: *'), ('\\DISALLOW_VALUE/', 'Disallow: /john'),
-                 ('\\USER_AGENT_VALUE/', 'User-agent: cheeseBurgerCat'), ('\\DISALLOW_VALUE/', 'Disallow: /ceiling-cat-place/')),
+               [('\\USER_AGENT_VALUE/', 'User-agent: *'),
+                ('\\DISALLOW_VALUE/', 'Disallow: /john'),
+                ('\\USER_AGENT_VALUE/', 'User-agent: cheeseBurgerCat'),
+                ('\\DISALLOW_VALUE/', 'Disallow: /ceiling-cat-place/')],
                 tokens)
+
     def test_robots_with_allow_value(self):
         """ This robots.txt comes from marketplace.mozilla.com. """
         tokens = self.do_scan("robots-with-allow-value.txt")
         self.assertEqual(
-                (('\\USER_AGENT_VALUE/', 'User-agent: *'), ('\\ALLOW_VALUE/', 'Allow: /'), \
-                    ('\\DISALLOW_VALUE/', 'Disallow: /downloads/'), ('\\DISALLOW_VALUE/', 'Disallow: /telefonica/')),
+                [('\\USER_AGENT_VALUE/', 'User-agent: *'),
+                 ('\\ALLOW_VALUE/', 'Allow: /'), \
+                 ('\\DISALLOW_VALUE/', 'Disallow: /downloads/'),
+                 ('\\DISALLOW_VALUE/', 'Disallow: /telefonica/')],
                 tokens)
 
     def test_robots_with_crawl_delay_integer(self):
         tokens = self.do_scan('robots-with-crawl-delay-integer.txt')
         self.assertEqual(
-            (('\\USER_AGENT_VALUE/', 'User-agent: Google'), ('\\CRAWL_DELAY_VALUE/', 'Crawl-delay: 2')), tokens)
+            [('\\USER_AGENT_VALUE/', 'User-agent: Google'),
+             ('\\CRAWL_DELAY_VALUE/', 'Crawl-delay: 2')],
+            tokens)
 
     def test_robots_with_crawl_delay_decimal(self):
         tokens = self.do_scan('robots-with-crawl-delay-decimal.txt')
         self.assertEqual(
-            (('\\USER_AGENT_VALUE/', 'User-agent: Google'), ('\\CRAWL_DELAY_VALUE/', 'Crawl-delay: 0.5')), tokens)
+            [('\\USER_AGENT_VALUE/', 'User-agent: Google'),
+             ('\\CRAWL_DELAY_VALUE/', 'Crawl-delay: 0.5')],
+            tokens)
 
     def test_robots_with_crawl_delay_fraction(self):
         tokens = self.do_scan('robots-with-crawl-delay-fraction.txt')
         self.assertEqual(
-            (('\\USER_AGENT_VALUE/', 'User-agent: Google'), ('\\CRAWL_DELAY_VALUE/', 'Crawl-delay: 1/4')), tokens)
+            [('\\USER_AGENT_VALUE/', 'User-agent: Google'),
+             ('\\CRAWL_DELAY_VALUE/', 'Crawl-delay: 1/4')],
+             tokens)
 
     def test_robots_with_request_rate(self):
         tokens = self.do_scan('robots-with-request-rate.txt')
         self.assertEqual(
-            (('\\USER_AGENT_VALUE/', 'User-agent: Google'), ('\\REQUEST_RATE_VALUE/', 'Request-rate: 1/4')), tokens)
+            [('\\USER_AGENT_VALUE/', 'User-agent: Google'),
+             ('\\REQUEST_RATE_VALUE/', 'Request-rate: 1/4')],
+            tokens)
 
     def test_robots_with_visit_time(self):
         tokens = self.do_scan('robots-with-visit-time.txt')
         self.assertEqual(
-            (('\\USER_AGENT_VALUE/', 'User-agent: Google'), ('\\VISIT_TIME_VALUE/', 'Visit-time: 1200-4000')), tokens)
+            [('\\USER_AGENT_VALUE/', 'User-agent: Google'),
+             ('\\VISIT_TIME_VALUE/', 'Visit-time: 1200-4000')],
+            tokens)
 
     def test_disabllow_name(self):
         name = '\\DISALLOW_VALUE/'
