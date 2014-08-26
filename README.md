@@ -17,7 +17,7 @@ Usage?
 ```
 >>> from robots_scanner import scanner
 >>> print scanner.scan("User-agent: Google\nDisallow: *")
-(('\\USER_AGENT_VALUE/', 'User-agent: Google'), ('\\DISALLOW_VALUE/', 'Disallow: '))
+(('\\USER_AGENT_VALUE/', 'User-agent: Google'), ('\\DISALLOW_VALUE/', 'Disallow: *'))
 ```
 
 Changelog
