@@ -26,7 +26,7 @@ def visit_time_value(scanner, token):
 
 UA_REGEX = "User-agent: \*|User-agent:\*|User-agent: [a-zA-Z_0-9]+|User-agent:[a-zA-Z_0-9]+"
 CM_REGEX = "^#.*"
-DIS_REGEX = "Disallow: [a-zA-Z_/\-0-9\s\.~]*|Disallow:[a-zA-Z_/\-0-9\s\.~]*"
+DIS_REGEX = "Disallow: [\*a-zA-Z_/\-0-9\s\.~]*|Disallow:[\*a-zA-Z_/\-0-9\s\.~]*"
 ALLOW_REGEX = "Allow: [a-zA-Z_/\-0-9\s\.~]*|Allow:[a-zA-Z_/\-0-9\s\.~]*"
 URL_REGEX = "http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+"
 SM_REGEX = "Sitemap: %s|Sitemap:%s" %(URL_REGEX, URL_REGEX)
