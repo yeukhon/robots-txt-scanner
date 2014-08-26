@@ -69,16 +69,31 @@ def scan(body):
         if line:
             token, rem = scanner.scan(line)
             token_name = token[0][0]
-            if token_name != "\\COMMENT/":
-                if not first_ua_found and token_name == "\\USER_AGENT_VALUE/":
-                    first_ua_found = True
-                elif token_name in options and not first_ua_found:
-                    error_msg = "robots.txt is invalid because %s is found before User-agent at the beginning of the document." % _name(token_name)
-                    raise Exception(error_msg)
-                # tokeb is a list of lists
-                # but we only need the first element in this list collection
-                tokens.append(tuple(token)[0])
-    return tuple(tokens)
+            tokens.append(tuple(token)[0])
+
+    return tokens
+
+def validate(tokens):
+    token_dict = {}
+    ua_found = False
+    ua_name = None
+    for token in tokens:
+        lexeme, token = token[0], token[1]
+        if lexeme == "\\COMMENT/":
+            continue
+        elif lexeme != "\\USER_AGENT_VALUE/" and ua_found:
+            if token_dict[ua_name].get(lexeme):
+                token_dict[ua_name][lexeme].append(token)
+            else:
+                token_dict[ua_name][lexeme] = [token]
+        elif lexeme != "\\USER_AGENT_VALUE/" and not ua_found:
+            raise Exception(
+                "There must be a user-agent preceeding {}".format(lexeme))
+        elif lexeme == "\\USER_AGENT_VALUE/" and not ua_found:
+            ua_found, ua_name = True, token
+        elif lexeme == "\\USER_AGENT_VALUE/" and ua_found:
+            ua_found, ua_name = False, None
+    return token_dict
 
 def _name(name):
     if 'DISALLOW' in name:
