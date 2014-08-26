@@ -1,4 +1,4 @@
-# robots.txt file for Firefox Marketplace, marketplace.firefox.com
+# robots.txt file for Firefox Marketplace
 User-agent: *
 Allow: /
 

@@ -55,17 +55,22 @@ class TestRobotScanner(unittest.TestCase):
         """ We reuse robots-with-two-ua-two-dis.txt but with more comments. """
         tokens = self.do_scan('robots-with-newline-comments.txt')
         self.assertEqual(
-               [('\\USER_AGENT_VALUE/', 'User-agent: *'),
+               [('\\COMMENT/', '# ceiling cat: Hi Grummy?'),
+                ('\\USER_AGENT_VALUE/', 'User-agent: *'),
+                ('\\COMMENT/', '# grummy cat: .\_/.'),
                 ('\\DISALLOW_VALUE/', 'Disallow: /john'),
+                ('\\COMMENT/', '# ceiling cat: Hi Grummy!'),
                 ('\\USER_AGENT_VALUE/', 'User-agent: cheeseBurgerCat'),
-                ('\\DISALLOW_VALUE/', 'Disallow: /ceiling-cat-place/')],
+                ('\\DISALLOW_VALUE/', 'Disallow: /ceiling-cat-place/'),
+                ('\\COMMENT/', '# grummy cat: get out')],
                 tokens)
 
     def test_robots_with_allow_value(self):
         """ This robots.txt comes from marketplace.mozilla.com. """
         tokens = self.do_scan("robots-with-allow-value.txt")
         self.assertEqual(
-                [('\\USER_AGENT_VALUE/', 'User-agent: *'),
+                [('\\COMMENT/', '# robots.txt file for Firefox Marketplace'),
+                 ('\\USER_AGENT_VALUE/', 'User-agent: *'),
                  ('\\ALLOW_VALUE/', 'Allow: /'), \
                  ('\\DISALLOW_VALUE/', 'Disallow: /downloads/'),
                  ('\\DISALLOW_VALUE/', 'Disallow: /telefonica/')],
