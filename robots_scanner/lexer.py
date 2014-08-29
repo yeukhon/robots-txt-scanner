@@ -4,7 +4,7 @@ from collections import namedtuple
 Token = namedtuple('Token',
             ['type', 'value', 'lineno', 'columno'])
 
-def tokens(source, definitions, ignore_case=True):
+def get_tokens(source, definitions, ignore_case=True):
     """Yield a token if part of the source matched one
     of the token definitions."""
     re_definitions = [ (re.compile(t_def[0], re.I),

@@ -6,10 +6,10 @@ VALUE = "TK_VALUE"
 IGNORES = "TK_IGNORES"
 
 TK_DEFINITIONS = [
-    (r"[\s\n\t"]+, IGNORES),
+    (r"[\s\n\t]+", IGNORES),
     (r"#.+", COMMENT),
     (r"\s*user-agent:\s*", UA_ID),
     (r"\s*allow:\s", ALLOW_ID),
-    (r"\sdisallow:\s*", DISALLOW_ID),
+    (r"\s*disallow:\s*", DISALLOW_ID),
     (r".+", VALUE)
 ]
