@@ -24,7 +24,7 @@ def verify_ALLOW(value):
     return True
 
 def verify_DISALLOW(value):
-    m = _verify(r"(?:\/[a-zA-Z0-9|\:|\@|\&|\=\.]*)+", value)
+    m = _verify(r"(?:\/[a-zA-Z0-9|\:|\@|\&|\=\.\*]*)+", value)
     if not m:
         raise SyntacticError(
             "Disallow rule accepts only relative path")

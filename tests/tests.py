@@ -79,6 +79,15 @@ class TestParserTree(unittest.TestCase):
              "Google": {"disallow": ["/google-only"]}}
         )
 
+    def test_disallow_with_star(self):
+        """Google and Yahoo are totally disallowed."""
+        text = self.get_text("basic-disallow-with-star.txt")
+        self.robot.parse(text)
+        self.assertEqual(self.robot._tree,
+            {"Yahoo": {"disallow": ["*"]},
+             "Google": {"disallow": ["*"]}}
+        )
+
     # Start testing extensions (built-in)
     def test_sitemap(self):
         """Should see * and Google accepts Sitemap."""
