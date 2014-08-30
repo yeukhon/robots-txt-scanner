@@ -99,3 +99,11 @@ class TestParserTree(unittest.TestCase):
              "Yahoo": {"crawl-delay": ["1/2"]},
              "Bing": {"crawl-delay": ["1"]}}
         )
+
+    def test_visit_time(self):
+        """Should see 1200-4000."""
+        text = self.get_text("extended-visit-time.txt")
+        self.robot.parse(text)
+        self.assertEqual(self.robot._tree,
+            {"Google": {"visit-time": ["1200-4000"]}}
+        )
