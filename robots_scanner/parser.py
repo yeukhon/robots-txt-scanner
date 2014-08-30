@@ -13,7 +13,8 @@ def group_tokens(tks):
                 tks, lambda x: x.lineno) ]
 
 def add_error(out, lineno, message):
-    return out.append({lineno: message})
+    out["errors"].append({lineno: message})
+    return out
 
 def parse(text):
     """Returns a dictionary containing AST of the robots.txt
@@ -61,7 +62,7 @@ def parse(text):
             full_value = "".join([_.value for _ in values])
             try:
                 field.predicate(full_value)
-            except tokens.SyntacticError:
+            except tokens.SyntacticError as e:
                 outputs = add_error(outputs, field.lineno, e.message)
             # If we finally see a UA, memorize it
             if field.type == tokens.UA_ID:
@@ -98,6 +99,10 @@ Allow: /index.html
 User-agent: Yahoo
 # Some comments here
 Disallow: /yahoo/
+
+User-agent: Bing
+Disallow: /bing/
+Disallow: http://domain.org/bad
 """
 import pprint
 pprint.pprint(parse(text), indent=2)

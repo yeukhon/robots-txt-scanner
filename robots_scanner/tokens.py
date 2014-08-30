@@ -1,5 +1,5 @@
 import re
-def SyntacticError(Exception):
+class SyntacticError(Exception):
     def __init__(self, message):
         super(SyntacticError, self).__init__(message)
         self.message = message
