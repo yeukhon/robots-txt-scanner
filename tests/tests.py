@@ -107,3 +107,11 @@ class TestParserTree(unittest.TestCase):
         self.assertEqual(self.robot._tree,
             {"Google": {"visit-time": ["1200-4000"]}}
         )
+
+    def test_request_rate(self):
+        """Should see 1/4."""
+        text = self.get_text("extended-request-rate.txt")
+        self.robot.parse(text)
+        self.assertEqual(self.robot._tree,
+            {"Google": {"request-rate": ["1/4"]}}
+        )

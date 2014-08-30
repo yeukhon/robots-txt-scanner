@@ -1,2 +1,0 @@
-User-agent: Google
-Visit-time: 1200-4000

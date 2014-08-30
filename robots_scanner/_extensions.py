@@ -24,12 +24,21 @@ def verify_VISIT_TIME(value):
             "Visit-time must be between 0000-2459"
         )
 
+def verify_REQUEST_RATE(value):
+    m = _verify("\d+/\d+", value)
+    if not m:
+        raise SyntacticError(
+            "Request-rate must be a faction."
+        )
+
 SITEMAP = "TK_SITEMAP"
 CRAWL_DELAY = "TK_CRAWL_DELAY"
 VISIT_TIME = "TK_VISIT_TIME"
+REQUEST_RATE = "TK_REQUEST_RATE"
 
 _EXTENDED_DEFINITIONS = [
     (r"\s*sitemap:\s*", SITEMAP, verify_SITEMAP),
     (r"\s*crawl-delay:\s*", CRAWL_DELAY, verify_CRAWL_DELAY),
     (r"\s*visit-time:\s*", VISIT_TIME, verify_VISIT_TIME),
+    (r"\s*request-rate:\s*", REQUEST_RATE, verify_REQUEST_RATE)
 ]
