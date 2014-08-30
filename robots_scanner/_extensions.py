@@ -11,7 +11,7 @@ def verify_SITEMAP(value):
             "Sitemap must be a full URL and ends with .xml or .xml.gz")
 
 def verify_CRAWL_DELAY(value):
-    m = _verify(r"[0-9]+(?:\.[0-9]+)?", value)
+    m = _verify(r"\d+(?:\.\d+)?", value)
     if not m:
         raise SyntacticError(
             "Crawl-delay value must be an integer, a float or a fraction."
