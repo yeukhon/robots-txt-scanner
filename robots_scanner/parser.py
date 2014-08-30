@@ -17,7 +17,22 @@ def add_error(out, lineno, message):
     out["errors"].append({lineno: message})
     return out
 
-def tokens_to_ast(text):
+def text_to_tokens(text, extensions=None):
+    if extensions:
+        definitions = (tokens.TK_DEFINITIONS[:-1] +
+                       extensions +
+                       tokens.TK_DEFINITIONS[-1])
+    else:
+        definitions = tokens.TK_DEFINITIONS
+    tks = [token for token in lexer.get_tokens(text, definitions)]
+
+    # Group tokens on the same lines together
+    # by first sort them by lineno.
+    sorted_tokens = sort_tokens(tks)
+    grouped_tokens = group_tokens(sorted_tokens)
+    return grouped_tokens
+
+def tokens_to_ast(grouped_tokens):
     """Returns a dictionary containing AST of the robots.txt
     and a list of (possibily empty) errors found during
     parsing.
@@ -42,12 +57,6 @@ def tokens_to_ast(text):
         }
     """
     outputs = {"records": [], "errors": []}
-    tks = [token for token in lexer.get_tokens(text, tokens.TK_DEFINITIONS)]
-
-    # Group tokens on the same lines together
-    # by first sort them by lineno.
-    sorted_tokens = sort_tokens(tks)
-    grouped_tokens = group_tokens(sorted_tokens)
 
     seen_ua = rule_begin = False
     for line in grouped_tokens:
@@ -95,7 +104,8 @@ class Robotstxt(object):
         self._tree = {}
 
     def parse(self, text):
-        ast = tokens_to_ast(text)
+        grouped_tokens = text_to_tokens(text)
+        ast = tokens_to_ast(grouped_tokens)
         self._create_tree(ast)
 
     def _create_tree(self, ast):
@@ -126,25 +136,28 @@ class Robotstxt(object):
         else:
             raise AgentNotFound(agent)
 
-text = """
-# COMMENT GOES HERE
-User-agent: Google # ee
-User-agent: Yahoo
-Disallow: /admin
-Disallow: /tmp/
-Allow: /index.html
+if __name__ == "__main__":
+    text = """
+    # COMMENT GOES HERE
+    User-agent: Google # inline comments
+    User-agent: Yahoo
+    Disallow: /admin
+    Disallow: /tmp/
+    Allow: /index.html
 
-User-agent: Yahoo
-# Some comments here
-Disallow: /yahoo/
+    User-agent: Yahoo
+    # Some comments here
+    Disallow: /yahoo/
 
-User-agent: Bing
-Disallow: /bing/
-Disallow: http://domain.org/bad
-"""
-import pprint
-pprint.pprint(tokens_to_ast(text), indent=2)
+    User-agent: Bing
+    Disallow: /bing/
+    Disallow: http://domain.org/bad
+    """
+    import pprint
+    pprint.pprint(
+        tokens_to_ast(
+            text_to_tokens(text)), indent=2)
 
-r = Robotstxt()
-r.parse(text)
-pprint.pprint(r._tree)
+    r = Robotstxt()
+    r.parse(text)
+    pprint.pprint(r._tree)
