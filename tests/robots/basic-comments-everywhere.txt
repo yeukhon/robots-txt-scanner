@@ -1,0 +1,10 @@
+# Top comment goes here
+
+User-agent: *   # Inline comment 1
+# More comment here
+Disallow: /all              # Inline comment using space not tab
+#Some comment without base after #
+#More comment goes here
+User-agent: Google
+Disallow: /google-only # another comment
+#comment after comment

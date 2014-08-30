@@ -1,0 +1,11 @@
+# Comment one
+User-agent: *
+Disallow: /all
+
+# Comment two
+User-agent: Google
+Disallow: /google-only/
+
+# Comment three
+User-agent: Yahoo
+Disallow: /yahoo-only

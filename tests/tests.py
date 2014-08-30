@@ -1,124 +1,80 @@
 import os
 import unittest
-from robots_scanner.scanner import scan, _name
+from robots_scanner import parser
 
 TEST_DIR = os.path.dirname(os.path.abspath(__file__))
 ROBOTS_DIR = os.path.join(TEST_DIR, 'robots')
 
-class TestRobotScanner(unittest.TestCase):
-    def do_scan(self, fname):
+class TestParserTree(unittest.TestCase):
+    def get_text(self, fname):
         with open(os.path.join(ROBOTS_DIR, fname), 'r') as f:
-            body = f.read()
-        return scan(body)
+            text = f.read()
+        return text
 
-    @unittest.skip("Exception not raised in scan anymore")
-    def test_disallow_first_raise_exception(self):
-        with open(os.path.join(ROBOTS_DIR, 'disallow-first.txt'), 'r') as f:
-            body = f.read()
-        self.assertRaises(Exception, scan, body)
+    def setUp(self):
+        self.robot = parser.Robotstxt()
 
-    @unittest.skip("Exception not raised in scan anymore")
-    def test_allow_first_raise_exception(self):
-        with open(os.path.join(ROBOTS_DIR, 'allow-first.txt'), 'r') as f:
-            body = f.read()
-        self.assertRaises(Exception, scan, body)
+    def test_basic(self):
+        """Should find * as user-agent and return disallow on /"""
+        text = self.get_text("basic.txt")
+        self.robot.parse(text)
+        self.assertEqual(self.robot._tree,
+            {"*": {"disallow": ["/"]}}
+        )
 
-    def test_disallow_star(self):
-        tokens = self.do_scan("robots-with-disallow-star.txt")
-        self.assertEqual(
-            tokens,
-            [('\\USER_AGENT_VALUE/',
-              'User-agent: google'),
-             ('\\DISALLOW_VALUE/', 'Disallow: *')])
+    def test_basic_stacked_ua(self):
+        """Should find Google and Yahoo and return disallow on /"""
+        text = self.get_text("basic-stacked-ua.txt")
+        self.robot.parse(text)
+        self.assertEqual(self.robot._tree,
+            {"Google": {"disallow": ["/"]},
+             "Yahoo": {"disallow": ["/"]}
+            }
+        )
 
-    def test_sitemap(self):
-        tokens = self.do_scan('robots-with-sitemap.txt')
-        self.assertEqual(
-                [('\\USER_AGENT_VALUE/', 'User-agent: *'), ('\\DISALLOW_VALUE/', 'Disallow: /john'),
-                 ('\\SITEMAP_VALUE/', 'Sitemap: https://example.org/sitemaps/sitemap.xml.gz')],
-                tokens)
+    def test_basic_comment_at_top(self):
+        """Should see * and disallow on / and comment is not in the tree."""
+        text = self.get_text("basic-comment-at-top.txt")
+        self.robot.parse(text)
+        self.assertEqual(self.robot._tree,
+            {"*": {"disallow": ["/"]}}
+        )
 
-    def test_basic_robots(self):
-        tokens = self.do_scan('robots-basic.txt')
-        self.assertEqual(
-                [('\\USER_AGENT_VALUE/', 'User-agent: *'), ('\\DISALLOW_VALUE/', 'Disallow: /john'),
-                 ('\\DISALLOW_VALUE/', 'Disallow: /json/')],
-                tokens)
+    def test_basic_comment_multiple_ua_separated(self):
+        """Should see *, Google and Yahoo with its own rule."""
+        text = self.get_text("basic-multiple-ua.txt")
+        self.robot.parse(text)
+        self.assertEqual(self.robot._tree,
+            {"*": {"disallow": ["/all"]},
+             "Google": {"disallow": ["/google-only/"]},
+             "Yahoo": {"disallow": ["/yahoo-only"]}}
+        )
 
-    def test_user_agents_two_disallows(self):
-        tokens = self.do_scan('robots-with-two-ua-two-dis.txt')
-        self.assertEqual(
-                [('\\USER_AGENT_VALUE/', 'User-agent: *'), ('\\DISALLOW_VALUE/', 'Disallow: /john'),
-                 ('\\USER_AGENT_VALUE/', 'User-agent: cheeseBurgerCat'),
-                 ('\\DISALLOW_VALUE/', 'Disallow: /ceiling-cat-place/')],
-                tokens)
+    def test_inline_comment(self):
+        """Should still see Google even though inline is applied."""
+        text = self.get_text("basic-inline-comment.txt")
+        self.robot.parse(text)
+        self.assertEqual(self.robot._tree,
+            {"*": {"disallow": ["/all"]},
+             "Google": {"disallow": ["/google-only/"]}}
+        )
 
-    def test_robots_with_newline_comments(self):
-        """ We reuse robots-with-two-ua-two-dis.txt but with more comments. """
-        tokens = self.do_scan('robots-with-newline-comments.txt')
-        self.assertEqual(
-               [('\\COMMENT/', '# ceiling cat: Hi Grummy?'),
-                ('\\USER_AGENT_VALUE/', 'User-agent: *'),
-                ('\\COMMENT/', '# grummy cat: .\_/.'),
-                ('\\DISALLOW_VALUE/', 'Disallow: /john'),
-                ('\\COMMENT/', '# ceiling cat: Hi Grummy!'),
-                ('\\USER_AGENT_VALUE/', 'User-agent: cheeseBurgerCat'),
-                ('\\DISALLOW_VALUE/', 'Disallow: /ceiling-cat-place/'),
-                ('\\COMMENT/', '# grummy cat: get out')],
-                tokens)
+    def test_disallow_and_allow(self):
+        """Should be able to read disallow and allow."""
+        text = self.get_text("basic-disallow-allow.txt")
+        self.robot.parse(text)
+        self.assertEqual(self.robot._tree,
+            {"*": {"disallow": ["/all"],
+                   "allow": ["/all-allow"]},
+             "Google": {"disallow": ["/google-only/"],
+                        "allow": ["/google-okay", "/google-okay2"]}}
+        )
 
-    def test_robots_with_allow_value(self):
-        """ This robots.txt comes from marketplace.mozilla.com. """
-        tokens = self.do_scan("robots-with-allow-value.txt")
-        self.assertEqual(
-                [('\\COMMENT/', '# robots.txt file for Firefox Marketplace'),
-                 ('\\USER_AGENT_VALUE/', 'User-agent: *'),
-                 ('\\ALLOW_VALUE/', 'Allow: /'), \
-                 ('\\DISALLOW_VALUE/', 'Disallow: /downloads/'),
-                 ('\\DISALLOW_VALUE/', 'Disallow: /telefonica/')],
-                tokens)
-
-    def test_robots_with_crawl_delay_integer(self):
-        tokens = self.do_scan('robots-with-crawl-delay-integer.txt')
-        self.assertEqual(
-            [('\\USER_AGENT_VALUE/', 'User-agent: Google'),
-             ('\\CRAWL_DELAY_VALUE/', 'Crawl-delay: 2')],
-            tokens)
-
-    def test_robots_with_crawl_delay_decimal(self):
-        tokens = self.do_scan('robots-with-crawl-delay-decimal.txt')
-        self.assertEqual(
-            [('\\USER_AGENT_VALUE/', 'User-agent: Google'),
-             ('\\CRAWL_DELAY_VALUE/', 'Crawl-delay: 0.5')],
-            tokens)
-
-    def test_robots_with_crawl_delay_fraction(self):
-        tokens = self.do_scan('robots-with-crawl-delay-fraction.txt')
-        self.assertEqual(
-            [('\\USER_AGENT_VALUE/', 'User-agent: Google'),
-             ('\\CRAWL_DELAY_VALUE/', 'Crawl-delay: 1/4')],
-             tokens)
-
-    def test_robots_with_request_rate(self):
-        tokens = self.do_scan('robots-with-request-rate.txt')
-        self.assertEqual(
-            [('\\USER_AGENT_VALUE/', 'User-agent: Google'),
-             ('\\REQUEST_RATE_VALUE/', 'Request-rate: 1/4')],
-            tokens)
-
-    def test_robots_with_visit_time(self):
-        tokens = self.do_scan('robots-with-visit-time.txt')
-        self.assertEqual(
-            [('\\USER_AGENT_VALUE/', 'User-agent: Google'),
-             ('\\VISIT_TIME_VALUE/', 'Visit-time: 1200-4000')],
-            tokens)
-
-    def test_disabllow_name(self):
-        name = '\\DISALLOW_VALUE/'
-        resp = _name(name)
-        self.assertEqual(resp, 'Disallow')
-
-    def test_allow_name(self):
-        name = '\\ALLOW_NAME/'
-        resp = _name(name)
-        self.assertEqual(resp, 'Allow')
+    def test_comment_between_every_where(self):
+        """Should still see * and Google with comments everywhere."""
+        text = self.get_text("basic-comments-everywhere.txt")
+        self.robot.parse(text)
+        self.assertEqual(self.robot._tree,
+            {"*": {"disallow": ["/all"]},
+             "Google": {"disallow": ["/google-only"]}}
+        )
