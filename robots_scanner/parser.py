@@ -89,6 +89,21 @@ def parse(text):
                     rules[field_name].append(full_value)
     return outputs
 
+class Robotstxt(object):
+    def __init__(self):
+        self._tree = {}
+
+    def create_tree(self, ast):
+        for record in ast["records"]:
+            for agent in record["agents"]:
+                if not self._tree.get(agent):
+                    self._tree[agent] = {}
+                for rule_name, spec in record["rules"].items():
+                    if not self._tree[agent].get(rule_name):
+                        self._tree[agent][rule_name] = []
+                    for s in spec:
+                        self._tree[agent][rule_name].append(s)
+                    
 text = """
 # COMMENT GOES HERE
 User-agent: Google # ee
@@ -107,3 +122,7 @@ Disallow: http://domain.org/bad
 """
 import pprint
 pprint.pprint(parse(text), indent=2)
+
+r = Robotstxt()
+r.create_tree(parse(text))
+pprint.pprint(r._tree)
