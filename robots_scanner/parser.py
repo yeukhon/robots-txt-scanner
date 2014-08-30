@@ -51,7 +51,7 @@ def parse(text):
     seen_ua = rule_begin = False
     for line in grouped_tokens:
         field, values = line[0], line[1:]
-        if field.type == tokens.COMMENT:
+        if field.type == tokens.BLANKCOMMENTS:
             continue
         # User-agent is not defined yet
         elif not seen_ua and not rule_begin and field.type != tokens.UA_ID:
@@ -59,7 +59,8 @@ def parse(text):
         else:
             # Join all the value tokens into a single string and pass to
             # predicate to check the syntax (e.g. joining NUMBER / NUMBER)
-            full_value = "".join([_.value for _ in values])
+            full_value = "".join([_.value for _ in values
+                if _.type != tokens.BLANKCOMMENTS])
             try:
                 field.predicate(full_value)
             except tokens.SyntacticError as e:
@@ -90,7 +91,7 @@ def parse(text):
 
 text = """
 # COMMENT GOES HERE
-User-agent: Google
+User-agent: Google # ee
 User-agent: Yahoo
 Disallow: /admin
 Disallow: /tmp/

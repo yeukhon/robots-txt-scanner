@@ -35,13 +35,12 @@ ALLOW_ID = "TK_ALLOW_ID"
 DISALLOW_ID = "TK_DISALLOW_ID"
 COMMENT = "TK_COMMENT"
 VALUE = "TK_VALUE"
-IGNORES = "TK_IGNORES"
+BLANKCOMMENTS = "TK_BLANKCOMMENTS"
 
 TK_DEFINITIONS = [
-    (r"[\s\n\t]+", IGNORES, None),
-    (r"#.+", COMMENT, None),
+    (r"(?:[\s\n\t]+|#.+)+", BLANKCOMMENTS, None),
     (r"\s*user-agent:\s*", UA_ID, verify_UA),
     (r"\s*allow:\s", ALLOW_ID, verify_ALLOW),
     (r"\s*disallow:\s*", DISALLOW_ID, verify_DISALLOW),
-    (r".+", VALUE, None)
+    (r"[^#\s\n\t]+", VALUE, None)
 ]
