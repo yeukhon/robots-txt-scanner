@@ -1,2 +1,6 @@
 User-agent: Google
 Crawl-delay: 0.5 # specifies a 0.5 second timeout
+User-agent: Yahoo
+Crawl-delay: 1/2
+User-agent: Bing
+Crawl-delay: 1

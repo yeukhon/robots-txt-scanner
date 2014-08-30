@@ -89,3 +89,13 @@ class TestParserTree(unittest.TestCase):
              "Google": {"sitemap":
                             ["http://example.org/google/sitemap.xml.gz"]}}
         )
+
+    def test_crawl_delay(self):
+        """Should see 0.5, 1/2 and 1 seconds in the tree."""
+        text = self.get_text("extended-crawl-delay.txt")
+        self.robot.parse(text)
+        self.assertEqual(self.robot._tree,
+            {"Google": {"crawl-delay": ["0.5"]},
+             "Yahoo": {"crawl-delay": ["1/2"]},
+             "Bing": {"crawl-delay": ["1"]}}
+        )

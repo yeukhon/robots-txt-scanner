@@ -1,2 +1,0 @@
-User-agent: Google
-Crawl-delay: 1/4 # specifies a 1/4 second timeout
