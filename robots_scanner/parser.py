@@ -101,9 +101,8 @@ class Robotstxt(object):
                 for rule_name, spec in record["rules"].items():
                     if not self._tree[agent].get(rule_name):
                         self._tree[agent][rule_name] = []
-                    for s in spec:
-                        self._tree[agent][rule_name].append(s)
-                    
+                    self._tree[agent][rule_name].extend(spec)
+
 text = """
 # COMMENT GOES HERE
 User-agent: Google # ee
