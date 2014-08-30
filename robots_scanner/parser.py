@@ -2,6 +2,7 @@ import itertools
 
 import lexer
 import tokens
+import _extensions
 
 UA_NOT_DEFINED = "User-agent must be defined before any rule can be applied."
 
@@ -17,11 +18,17 @@ def add_error(out, lineno, message):
     out["errors"].append({lineno: message})
     return out
 
-def text_to_tokens(text, extensions=None):
-    if extensions:
+def text_to_tokens(text, extensions=None, strict=False):
+    if not strict:
+        built_in_exts = _extensions._EXTENDED_DEFINITIONS
+    if not extensions:
+        extensions = built_in_exts
+    else:
+        extensions = built_in_exts + extensions
+    if not strict:
         definitions = (tokens.TK_DEFINITIONS[:-1] +
                        extensions +
-                       tokens.TK_DEFINITIONS[-1])
+                       tokens.TK_DEFINITIONS[-1:])
     else:
         definitions = tokens.TK_DEFINITIONS
     tks = [token for token in lexer.get_tokens(text, definitions)]

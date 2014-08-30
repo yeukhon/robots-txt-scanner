@@ -1,3 +1,0 @@
-User-agent: *
-Disallow: /john
-Sitemap: https://example.org/sitemaps/sitemap.xml.gz

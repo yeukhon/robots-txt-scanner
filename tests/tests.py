@@ -78,3 +78,14 @@ class TestParserTree(unittest.TestCase):
             {"*": {"disallow": ["/all"]},
              "Google": {"disallow": ["/google-only"]}}
         )
+
+    # Start testing extensions (built-in)
+    def test_sitemap(self):
+        """Should see * and Google accepts Sitemap."""
+        text = self.get_text("extended-sitemap.txt")
+        self.robot.parse(text)
+        self.assertEqual(self.robot._tree,
+            {"*": {"sitemap": ["http://example.org/sitemap.xml"]},
+             "Google": {"sitemap":
+                            ["http://example.org/google/sitemap.xml.gz"]}}
+        )

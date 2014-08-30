@@ -1,0 +1,4 @@
+User-agent: *
+Sitemap: http://example.org/sitemap.xml
+User-agent: Google
+Sitemap: http://example.org/google/sitemap.xml.gz
