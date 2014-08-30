@@ -2,6 +2,7 @@ import itertools
 
 import lexer
 import tokens
+
 UA_NOT_DEFINED = "User-agent must be defined before any rule can be applied."
 
 def sort_tokens(tks):
@@ -16,7 +17,7 @@ def add_error(out, lineno, message):
     out["errors"].append({lineno: message})
     return out
 
-def parse(text):
+def tokens_to_ast(text):
     """Returns a dictionary containing AST of the robots.txt
     and a list of (possibily empty) errors found during
     parsing.
@@ -93,7 +94,11 @@ class Robotstxt(object):
     def __init__(self):
         self._tree = {}
 
-    def create_tree(self, ast):
+    def parse(self, text):
+        ast = tokens_to_ast(text)
+        self._create_tree(ast)
+
+    def _create_tree(self, ast):
         for record in ast["records"]:
             for agent in record["agents"]:
                 if not self._tree.get(agent):
@@ -102,6 +107,24 @@ class Robotstxt(object):
                     if not self._tree[agent].get(rule_name):
                         self._tree[agent][rule_name] = []
                     self._tree[agent][rule_name].extend(spec)
+
+    def list_agents(self):
+        return self._tree.keys()
+
+    def list_agent_rules(self, agent):
+        if self._tree.get(agent):
+            return self._tree[agent].keys()
+        else:
+            raise AgentNotFound(agent)
+
+    def can_fetch(agent, url):
+        if self._tree.get(agent):
+            if "allow" in self._tree[agent]:
+                return url in self._tree[agent]["allow"]
+            else:
+                return True
+        else:
+            raise AgentNotFound(agent)
 
 text = """
 # COMMENT GOES HERE
@@ -120,8 +143,8 @@ Disallow: /bing/
 Disallow: http://domain.org/bad
 """
 import pprint
-pprint.pprint(parse(text), indent=2)
+pprint.pprint(tokens_to_ast(text), indent=2)
 
 r = Robotstxt()
-r.create_tree(parse(text))
+r.parse(text)
 pprint.pprint(r._tree)
