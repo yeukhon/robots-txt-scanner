@@ -1,32 +1,32 @@
+import re
 def SyntacticError(Exception):
-    def __init__(self, token, message):
+    def __init__(self, message):
         super(SyntacticError, self).__init__(message)
         self.message = message
-        self.token = token
 
 def _verify(pattern, value):
     r = re.compile(pattern, re.I)
     m = r.match(value)
     return m
 
-def verify_UA(token):
-    m = _verify(r"[a-zA-Z]+(?:-?[a-zA-Z0-9]+)*", token.value)
+def verify_UA(value):
+    m = _verify(r"[a-zA-Z]+(?:-?[a-zA-Z0-9]+)*", value)
     if not m:
-        raise SyntacticError(token,
+        raise SyntacticError(
             "User-agent can only contain letters, numbers and -")
     return True
 
-def verify_ALLOW(token):
-    m = _verify(r"(?:\/[a-zA-Z0-9|\:|\@|\&|\=\.]*)+", token.value)
+def verify_ALLOW(value):
+    m = _verify(r"(?:\/[a-zA-Z0-9|\:|\@|\&|\=\.]*)+", value)
     if not m:
-        raise SyntacticError(token,
+        raise SyntacticError(
             "Allow rule accepts only relative path")
     return True
 
-def verify_DISALLOW(token):
-    m = _verify(r"(?:\/[a-zA-Z0-9|\:|\@|\&|\=\.]*)+", token.value)
+def verify_DISALLOW(value):
+    m = _verify(r"(?:\/[a-zA-Z0-9|\:|\@|\&|\=\.]*)+", value)
     if not m:
-        raise SyntacticError(token,
+        raise SyntacticError(
             "Disallow rule accepts only relative path")
     return True
 
