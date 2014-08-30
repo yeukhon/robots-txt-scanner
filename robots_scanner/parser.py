@@ -48,6 +48,21 @@ def parse(text):
     # by first sort them by lineno.
     sorted_tokens = sort_tokens(tks)
     grouped_tokens = group_tokens(sorted_tokens)
+
+    seen_ua = False
+    last_start_line = 0
+
+    """
+    for line in grouped_tokens:
+        for tk in line:
+            if tk.type == tokens.COMMENT:
+                continue
+            # User-agent is not defined yet
+            elif not seen_ua and tk.type !== tokens.UA_ID:
+                outputs = add_error(outputs, tk, UA_UNDEFINED)
+            elif tk.type == tokens.UA_ID:
+                pass
+    """
     return grouped_tokens
 
 text = """
