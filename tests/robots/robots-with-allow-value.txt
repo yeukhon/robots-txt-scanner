@@ -1,6 +1,0 @@
-# robots.txt file for Firefox Marketplace
-User-agent: *
-Allow: /
-
-Disallow: /downloads/
-Disallow: /telefonica/
