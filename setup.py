@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(name="robots-scanner",
-      version="0.1.3",
+      version="0.2.0a",
       description="robots.txt scanner",
       author="Yeuk Hon Wong",
       classifiers=[
@@ -10,7 +10,7 @@ setup(name="robots-scanner",
         'Topic :: Internet',
         'Topic :: Security',
       ],
-      author_email="yeukhon@mozilla.com",
+      author_email="yeukhon@acm.org",
       packages=find_packages(),
       include_package_data=True,
 )
