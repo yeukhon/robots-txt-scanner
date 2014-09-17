@@ -11,6 +11,18 @@ class TestParserTree(unittest.TestCase):
             text = f.read()
         return text
 
+    def assertDuplicateErrors(self, expected, text):
+        length = len(text.split("\n"))
+        lines = range(2, length, 3)
+        self.assertEqual(len(expected["errors"]), len(lines))
+        self.assertEqual(
+            expected["errors"],
+            self.gen_unique_errors(range(2, length, 3))
+        )
+
+    def gen_unique_errors(self, lines):
+        return [{line: parser.UNIQUE_ERROR} for line in lines]
+
     def setUp(self):
         self.robot = parser.Robotstxt()
 
@@ -123,4 +135,34 @@ class TestParserTree(unittest.TestCase):
         self.robot.parse(text)
         self.assertEqual(self.robot._tree,
             {"Google": {"request-rate": ["1/4"]}}
+        )
+
+    def test_duplicate_craw_delay(self):
+        """Should see three duplicate errors."""
+        text = self.get_text("extended-crawl-delay-duplicate.txt")
+        self.robot.parse(text)
+        # We structure the test file such that there are two rules
+        # per user-agent, which means line 2, 5, 8 must be reported
+        # as error.
+        self.assertDuplicateErrors(self.robot._ast, text)
+
+    def test_duplicate_request_rate(self):
+        """Should see three request-rate duplicate errors."""
+        text = self.get_text("extended-request-rate-duplicate.txt")
+        self.robot.parse(text)
+        self.assertDuplicateErrors(self.robot._ast, text)
+
+    def test_duplicate_visit_time(self):
+        """Should see three visit-time duplicate errors."""
+        text = self.get_text("extended-visit-time-duplicate.txt")
+        self.robot.parse(text)
+        self.assertDuplicateErrors(self.robot._ast, text)
+
+    def test_mix_duplicate(self):
+        """Should see 1 duplicate (visit-time) error."""
+        text = self.get_text("extended-mix-duplicate-1.txt")
+        self.robot.parse(text)
+        self.assertEqual(len(self.robot._ast["errors"]), 1)
+        self.assertEqual(self.robot._ast["errors"][0],
+            {5: parser.UNIQUE_ERROR}
         )

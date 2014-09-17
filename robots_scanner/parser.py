@@ -5,6 +5,7 @@ import tokens
 import _extensions
 
 UA_NOT_DEFINED = "User-agent must be defined before any rule can be applied."
+UNIQUE_ERROR = "Duplicate rule entry cannot be applied for the same user agent."
 
 def sort_tokens(tks):
     return sorted(tks, key=lambda x: x.lineno)
@@ -103,17 +104,21 @@ def tokens_to_ast(grouped_tokens):
                 if not rules.get(field_name):
                     rules[field_name] = [full_value]
                 else:
+                    if field.unique is tokens.UNIQUE:
+                        outputs = add_error(outputs, field.lineno, UNIQUE_ERROR)
                     rules[field_name].append(full_value)
+
     return outputs
 
 class Robotstxt(object):
     def __init__(self):
         self._tree = {}
+        self._ast = None
 
     def parse(self, text):
         grouped_tokens = text_to_tokens(text)
-        ast = tokens_to_ast(grouped_tokens)
-        self._create_tree(ast)
+        self._ast = tokens_to_ast(grouped_tokens)
+        self._create_tree(self._ast)
 
     def _create_tree(self, ast):
         for record in ast["records"]:

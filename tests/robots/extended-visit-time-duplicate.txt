@@ -1,0 +1,9 @@
+User-agent: Google
+Visit-time: 1200-4000
+Visit-time: 1200-4000
+User-agent: Yahoo
+Visit-time: 1200-4000
+Visit-time: 1200-4000
+User-agent: Bing
+Visit-time: 1200-4000
+Visit-time: 1200-4000

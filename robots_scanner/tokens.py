@@ -1,4 +1,8 @@
 import re
+
+UNIQUE = True
+NOT_UNIQUE = False
+
 class SyntacticError(Exception):
     def __init__(self, message):
         super(SyntacticError, self).__init__(message)
@@ -38,9 +42,9 @@ VALUE = "TK_VALUE"
 BLANKCOMMENTS = "TK_BLANKCOMMENTS"
 
 TK_DEFINITIONS = [
-    (r"(?:[\s\n\t]+|#.+)+", BLANKCOMMENTS, None),
-    (r"\s*user-agent:\s*", UA_ID, verify_UA),
-    (r"\s*allow:\s", ALLOW_ID, verify_ALLOW),
-    (r"\s*disallow:\s*", DISALLOW_ID, verify_DISALLOW),
-    (r"[^#\s\n\t]+", VALUE, None)
+    (r"(?:[\s\n\t]+|#.+)+", BLANKCOMMENTS, None, NOT_UNIQUE),
+    (r"\s*user-agent:\s*", UA_ID, verify_UA, NOT_UNIQUE),
+    (r"\s*allow:\s", ALLOW_ID, verify_ALLOW, NOT_UNIQUE),
+    (r"\s*disallow:\s*", DISALLOW_ID, verify_DISALLOW, NOT_UNIQUE),
+    (r"[^#\s\n\t]+", VALUE, None, NOT_UNIQUE)
 ]

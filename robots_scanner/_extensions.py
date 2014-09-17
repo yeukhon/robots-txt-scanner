@@ -1,4 +1,4 @@
-from tokens import SyntacticError, _verify
+from tokens import SyntacticError, _verify, UNIQUE, NOT_UNIQUE
 
 def verify_SITEMAP(value):
     m = _verify(
@@ -37,8 +37,8 @@ VISIT_TIME = "TK_VISIT_TIME"
 REQUEST_RATE = "TK_REQUEST_RATE"
 
 _EXTENDED_DEFINITIONS = [
-    (r"\s*sitemap:\s*", SITEMAP, verify_SITEMAP),
-    (r"\s*crawl-delay:\s*", CRAWL_DELAY, verify_CRAWL_DELAY),
-    (r"\s*visit-time:\s*", VISIT_TIME, verify_VISIT_TIME),
-    (r"\s*request-rate:\s*", REQUEST_RATE, verify_REQUEST_RATE)
+    (r"\s*sitemap:\s*", SITEMAP, verify_SITEMAP, NOT_UNIQUE),
+    (r"\s*crawl-delay:\s*", CRAWL_DELAY, verify_CRAWL_DELAY, UNIQUE),
+    (r"\s*visit-time:\s*", VISIT_TIME, verify_VISIT_TIME, UNIQUE),
+    (r"\s*request-rate:\s*", REQUEST_RATE, verify_REQUEST_RATE, UNIQUE)
 ]

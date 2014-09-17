@@ -1,0 +1,6 @@
+User-agent: Google
+User-agent: Yahoo
+Allow: /public
+Visit-time: 1200-4000
+Disallow: /admin
+Visit-time: 1200-4000
