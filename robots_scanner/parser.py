@@ -113,7 +113,7 @@ def tokens_to_ast(grouped_tokens):
 class Robotstxt(object):
     def __init__(self):
         self._tree = {}
-        self._ast = None
+        self._ast = {}
 
     def parse(self, text):
         grouped_tokens = text_to_tokens(text)
@@ -138,6 +138,9 @@ class Robotstxt(object):
             return self._tree[agent].keys()
         else:
             raise AgentNotFound(agent)
+
+    def list_parsing_errors(self):
+        return self._ast["errors"]
 
     def can_fetch(agent, url):
         if self._tree.get(agent):
